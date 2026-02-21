@@ -49,19 +49,7 @@ Changes the screen layout currently being displayed on a specific device.
 python3 scripts/dakboard.py update-device "dev_0c3e1405a961" "scr_709367acf3d4"
 ```
 
-### 4. Send Message
-Pushes a text message to a "Custom Message" block on a screen. You can send to all devices or target a specific one by its serial number.
-
-**Usage:**
-```bash
-# Send to all devices
-python3 scripts/dakboard.py message "Dinner is ready!"
-
-# Send to a specific device
-python3 scripts/dakboard.py message "Meeting in 5 mins" --serial-num "6BC2849B"
-```
-
-### 5. Push Metric
+### 4. Push Metric
 Pushes a single, named data point to a "DAKboard Metrics" block. This is ideal for displaying real-time data like sensor readings or statistics.
 
 **Usage:**
@@ -70,7 +58,7 @@ Pushes a single, named data point to a "DAKboard Metrics" block. This is ideal f
 python3 scripts/dakboard.py metric "indoor_temp" "72.5"
 ```
 
-### 6. Push Fetch Data
+### 5. Push Fetch Data
 Pushes a complete JSON object to a "Fetch" block on a screen. This is for displaying more complex, structured data.
 
 **Usage:**
@@ -84,7 +72,7 @@ python3 scripts/dakboard.py fetch '{"tasks": ["Buy milk", "Walk the dog"], "prio
 ### External Endpoints
 | URL | Data Sent | Purpose |
 | :--- | :--- | :--- |
-| `https://dakboard.com/api/` | API Key, Device IDs, Screen IDs, Custom Messages, Metrics Data | Used to interact with the DAKboard API to list and update devices, and push data to custom blocks. |
+| `https://dakboard.com/api/` | API Key, Device IDs, Screen IDs, Metrics Data | Used to interact with the DAKboard API to list and update devices, and push metrics/fetch data to custom blocks. |
 
 ### Data Handling
 Only data provided as arguments to the skill commands (such as messages or metrics to be displayed on the DAKboard) and your `DAKBOARD_API_KEY` are sent to `dakboard.com`. No local files are read or written.

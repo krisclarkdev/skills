@@ -31,8 +31,7 @@ def make_request(method, endpoint, data=None):
     body = None
     headers = {"Accept": "application/json"}
 
-    is_form_encoded = (method == "PUT" and endpoint.startswith("/devices")) or \
-                      (method == "POST" and endpoint.startswith("/v2/custom-message"))
+    is_form_encoded = (method == "PUT" and endpoint.startswith("/devices"))
 
     # Always add api_key to the URL
     if "?" in url:
@@ -73,12 +72,6 @@ def cmd_get_screens(args):
 def cmd_update_device(args):
     print(json.dumps(make_request("PUT", f"/devices/{args.device_id}", data={"screen_id": args.screen_id}), indent=2))
 
-def cmd_send_message(args):
-    data = {"message": args.message}
-    if args.serial_num:
-        data['serial_numbers[]'] = args.serial_num
-    print(json.dumps(make_request("POST", "/v2/custom-message", data=data), indent=2))
-
 def cmd_push_metric(args):
     print(json.dumps(make_request("POST", "/metrics", data={args.key: args.value}), indent=2))
 
@@ -94,9 +87,6 @@ def main():
     p_update = subparsers.add_parser("update-device", help="Update the screen layout on a device.")
     p_update.add_argument("device_id", help="The ID of the device (e.g., dev_xxxxxxxx).")
     p_update.add_argument("screen_id", help="The ID of the screen to assign (e.g., scr_xxxxxxxx).")
-    p_msg = subparsers.add_parser("message", help="Send a message to a Custom Message block.")
-    p_msg.add_argument("message", help="The text message to send.")
-    p_msg.add_argument("--serial-num", help="Optional: The serial number of the target device.")
     p_metric = subparsers.add_parser("metric", help="Push a single data point to a Metrics block.")
     p_metric.add_argument("key", help="The name of the metric.")
     p_metric.add_argument("value", help="The value of the metric.")
@@ -107,7 +97,7 @@ def main():
     
     cmd_map = {
         "devices": cmd_get_devices, "screens": cmd_get_screens, "update-device": cmd_update_device,
-        "message": cmd_send_message, "metric": cmd_push_metric, "fetch": cmd_push_fetch,
+        "metric": cmd_push_metric, "fetch": cmd_push_fetch,
     }
     cmd_map[args.command](args)
 
