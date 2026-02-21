@@ -55,12 +55,14 @@ def make_request(method, endpoint, data=None):
                  return {"status": "success", "message": res_body}
             return json.loads(res_body)
     except urllib.error.HTTPError as e:
-        error_body = e.read().decode("utf-8")
-        print(f"HTTP Error {e.code}: {e.reason}", file=sys.stderr)
+        error_body = e.read().decode("utf-8").replace(api_key, "***REDACTED***")
+        reason = str(e.reason).replace(api_key, "***REDACTED***")
+        print(f"HTTP Error {e.code}: {reason}", file=sys.stderr)
         print(f"Response: {error_body}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"Error making request: {e}", file=sys.stderr)
+        error_msg = str(e).replace(api_key, "***REDACTED***")
+        print(f"Error making request: {error_msg}", file=sys.stderr)
         sys.exit(1)
 
 def cmd_get_devices(args):
@@ -70,13 +72,19 @@ def cmd_get_screens(args):
     print(json.dumps(make_request("GET", "/screens"), indent=2))
 
 def cmd_update_device(args):
-    print(json.dumps(make_request("PUT", f"/devices/{args.device_id}", data={"screen_id": args.screen_id}), indent=2))
+    device_id = urllib.parse.quote(args.device_id, safe='')
+    print(json.dumps(make_request("PUT", f"/devices/{device_id}", data={"screen_id": args.screen_id}), indent=2))
 
 def cmd_push_metric(args):
     print(json.dumps(make_request("POST", "/metrics", data={args.key: args.value}), indent=2))
 
 def cmd_push_fetch(args):
-    print(json.dumps(make_request("POST", "/fetch", data=json.loads(args.json_data)), indent=2))
+    try:
+        data = json.loads(args.json_data)
+    except json.JSONDecodeError:
+        print("Error: Invalid JSON data provided for fetch block.", file=sys.stderr)
+        sys.exit(1)
+    print(json.dumps(make_request("POST", "/fetch", data=data), indent=2))
 
 def main():
     parser = argparse.ArgumentParser(description="DAKboard API CLI Skill")

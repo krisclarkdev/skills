@@ -1,11 +1,14 @@
 ---
-metadata.clawdbot:
-  name: dakboard
-  description: Manage DAKboard screens, devices, and push custom display data.
-  author: Kristopher Clark
-  homepage: https://github.com/krisclarkdev/dakboard-skill
-  requires.env: ["DAKBOARD_API_KEY"]
-  files: ["scripts/*"]
+name: dakboard
+description: Manage DAKboard screens, devices, and push custom display data.
+author: Kristopher Clark
+homepage: https://github.com/krisclarkdev/dakboard-skill
+files: ["scripts/*"]
+metadata:
+  clawdbot:
+    requires:
+      env:
+        - DAKBOARD_API_KEY
 ---
 
 # DAKboard Skill
